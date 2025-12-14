@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Airport Luggage Form</title>
+
+<link rel="stylesheet" href="Baggage-check-in.css"> 
+</head>
+
+<body>
+<div class="container"> 
+<div class="title">
+<h1>Baggage Check-in</h1>
+</div>
+
+<div class="form-container">
+    
+
+    <form id="luggageForm" method="POST" action="/submit-luggage">
+        <label for="document_ID">Document ID:</label>
+        <input type="text" name="document_ID" id="document_ID" required>
+
+        <label for="flightNumber">Flight Number:</label>
+        <input type="text" name="flightNumber" id="flightNumber" required>
+
+        <label for="weight">Weight:</label>
+        <input type="number" step="1.0" name="weight" id="weight" required>
+
+        <label for="airlineName">Airline:</label>
+        <input type="text" name="airlineName" id="airlineName" required>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>    
+</div>
+
+
+</body>
+</html>
