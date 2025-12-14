@@ -60,19 +60,6 @@ From an ANDB standpoint, Jira issues are designed to later map into:
 - Transactions for baggage movement
 - Constraints for security and tracking accuracy
 
-This ensures that requirements are **database-ready** and suitable for implementation.
-
----
-
-
-/README.md
-/jira-issues
-  ├── epics.md
-  ├── stories.md
-  └── tasks.md
-/diagrams
-  └── baggage-handling-flow.png
-```
 
 ---
 
