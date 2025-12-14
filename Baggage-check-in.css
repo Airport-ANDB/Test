@@ -21,6 +21,7 @@ body {
     width: 20%;
     margin-left: auto;
     margin-right: auto;
+    background-color: white;
 }
 
 .form-container h1 {
@@ -46,14 +47,14 @@ button {
     width: 20%;
     margin-top: 25px;
     padding: 10px;
-    background-color: #042337;
+    background-color: #c2ccd6;
     border: none;
-    color: white;
     font-size: 16px;
     border-radius: 5px;
     cursor: pointer;
 }
 
 button:hover {
-    background-color: #153448;
+    background-color: #848a8f;
+    color: white;
 }
