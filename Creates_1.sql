@@ -1,12 +1,14 @@
+use AirportLuggageDB;
+
 CREATE TABLE Airline (
     Name VARCHAR(100) PRIMARY KEY,
     Weight_limit DECIMAL(10, 2),
+    Fee DECIMAL (5,2),
     Description VARCHAR(100)
 );
 
 CREATE TABLE Passenger (
-    Document_ID VARCHAR(50) PRIMARY KEY, 
-    PESEL VARCHAR(11),            
+    Document_ID VARCHAR(50) PRIMARY KEY,            
     Name VARCHAR(50) NOT NULL,
     Surname VARCHAR(50) NOT NULL
 );
@@ -25,24 +27,25 @@ CREATE TABLE Flight (
 );
 
 CREATE TABLE Container (
-    ID INT PRIMARY KEY,
+    ID INT IDENTITY PRIMARY KEY,
     Number VARCHAR(50) NOT NULL, 
-    Max_load DECIMAL(10, 2) NOT NULL,
+    Max_load INT NOT NULL,
     Status VARCHAR(50)
 );
 
 CREATE TABLE Baggage (
-    Baggage_ID INT PRIMARY KEY,
+    Baggage_ID INT IDENTITY PRIMARY KEY,
     Weight DECIMAL(5, 2) NOT NULL,
-    Fee DECIMAL(10, 2),
+    Fee DECIMAL(5,2),
     Status VARCHAR(50) NOT NULL,
-    Security_in_time DATETIME,
-    Loading_time_end DATETIME,
-    Routing_time DATETIME,
-    Check_in_time DATETIME,
-    Unloading_time_end DATETIME,
-    Loading_time_start DATETIME,
-    Unloading_time_start DATETIME,
+    Check_in_time DATETIME2(0),
+    Security_time DATETIME2(0),
+    Loading_time_start DATETIME2(0),
+    Loading_time_end DATETIME2(0),
+    Routing_time DATETIME2(0),
+    Unloading_time_start DATETIME2(0),
+    Unloading_time_end DATETIME2(0),
+
 
     Passenger_Document_ID VARCHAR(50) NOT NULL, 
     Flight_Number VARCHAR(20) NOT NULL,         
