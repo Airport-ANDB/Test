@@ -9,10 +9,9 @@ The work is organized into **time-boxed sprints**, where Jira tasks are used to 
 
 
 ## Objectives
-- Understand airport baggage handling workflows
-- Model functional and non-functional requirements using Jira
-- Practice requirement engineering for large-scale systems
-- Prepare a foundation for database and system design (ANDB context)
+- Design and implement Airport database
+- Conect sql server to Power BI
+- Create summaries and reciept template and generation
 
 ---
 
@@ -22,10 +21,7 @@ The baggage handling system covers the lifecycle of baggage from **check-in to a
 ### Key Processes
 - Passenger baggage check-in
 - Baggage tagging and tracking
-- Conveyor belt routing
-- Security screening
 - Aircraft loading and unloading
-- Lost, delayed, or damaged baggage handling
 
 ---
 
@@ -33,12 +29,12 @@ The baggage handling system covers the lifecycle of baggage from **check-in to a
 This project uses Jira to plan and track sprint-based development activities.
 
 ### Sprint Information
-**Sprint Name:** Airport Sprint 4
+**Sprint Name:** Airport Sprint 1
 
 **Sprint Duration:** 4 December – 18 December
 
 **Sprint Goal:**
-Deliver the first functional foundation of the baggage management system by enabling the team to register, validate, store, and retrieve baggage data, and to provide initial visibility of baggage information through basic dashboards.
+Within this 2 week sprint deliver the first functional foundation of the baggage management system by enabling the team to register validate store and retrieve baggage data and also to provide initial visibility of baggage data through basic dashboards
 
 ### Sprint Tasks
 - Design baggage database schema
@@ -48,18 +44,6 @@ Deliver the first functional foundation of the baggage management system by enab
 - Develop baggage location dashboard UI
 - Passenger receipt and confirmation generation
 - Build flight statistics reporting module
-
-### Jira Issue Types
-- **Task**: Database, validation, reporting, and dashboard work items
-- **Story**: Functional baggage handling requirements
-
-## Database Perspective (ANDB)
-
-From an ANDB standpoint, Jira issues are designed to later map into:
-- Relational tables (Baggage, Passenger, Flight, Conveyor, Screening)
-- Transactions for baggage movement
-- Constraints for security and tracking accuracy
-
 
 ---
 
@@ -71,18 +55,11 @@ From an ANDB standpoint, Jira issues are designed to later map into:
 
 ---
 
-
-
-## Learning Outcomes
-- Practical experience using Jira for system analysis
-- Better understanding of airport operational systems
-- Ability to convert real-world processes into structured requirements
-- Strong foundation for database design in ANDB
-
----
-
 ## Author
-Created for **ANDB coursework** focusing on **airport baggage handling system analysis using Jira**.
+Created for **ANDB coursework** by
+Szymon Skarbek
+Anna Radosz
+Maciek Pajkowski
 
 ---
 
