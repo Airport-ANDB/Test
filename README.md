@@ -57,9 +57,9 @@ Within this 2 week sprint deliver the first functional foundation of the baggage
 
 ## Author
 Created for **ANDB coursework** by
-Szymon Skarbek
-Anna Radosz
-Maciek Pajkowski
+- Szymon Skarbek
+- Anna Radosz
+- Maciek Pajkowski
 
 ---
 
