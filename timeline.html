@@ -11,11 +11,14 @@
 
     <h1>Baggage Timeline Viewer</h1>
 
-    <form id="baggageForm">
-        <label for="baggageId">Enter Baggage ID:</label>
-        <input type="number" id="baggageId" required>
-        <button type="submit">Show Timeline</button>
-    </form>
+    <div id="baggageForm">
+        <form id="baggageForm">
+            <label for="baggageId">Enter Baggage ID:</label>
+            <input type="number" id="baggageId" required>
+            <button type="submit">Show Timeline</button>
+        </form>
+    </div>
+    
 
     <div id="timelineWrapper">
         <div id="timelineLine"></div>
@@ -38,9 +41,7 @@ const timeLabels = document.getElementById('timeLabels');
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    timeline.innerHTML = "";
-    timelineLine.style.display = "none";
-    timeLabels.style.display = "none";
+    timeline.innerHTML = "";    
 
     const baggageId = document.getElementById('baggageId').value;
 
@@ -68,6 +69,7 @@ form.addEventListener('submit', async (e) => {
             hasEvents = true;
 
             const date = new Date(event.time);
+            date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
             const minutes = date.getHours() * 60 + date.getMinutes();
             const percent = (minutes / 1440) * 100;
 
@@ -77,7 +79,7 @@ form.addEventListener('submit', async (e) => {
 
             const label = document.createElement('div');
             label.className = 'label';
-            label.innerText = `${event.label}\n${date.toTimeString().slice(0,5)}`;
+            label.innerText = `${event.label}\n${date.toTimeString().slice(0,8)}`;
 
             dot.appendChild(label);
             timeline.appendChild(dot);
