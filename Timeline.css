@@ -1,0 +1,122 @@
+body {
+    background-color: #c2ccd6;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#baggageForm {
+    background-color: white;
+    width: 60%;
+    margin: 0 auto 0 auto;
+    padding: 10px 0 10px 0;
+    border-radius: 10px;        
+}
+
+form label {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+form {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+form input {
+    padding: 5px 5px 5px 5px;
+    margin: 0 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+form button {
+    padding: 8px 10px 8px 10px;
+    background-color: #c2ccd6;
+    border: none;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    min-width: 70px;
+}
+
+form button:hover {
+    background-color: #848a8f;
+    color: white;
+}
+
+#timelineWrapper {
+    position: relative;
+    width: 80%;
+    margin: 0 auto;
+    height: 60px;
+    margin-top: 50px;
+}
+
+#timelineLine {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: #999;
+    transform: translateY(-50%);
+    display: none;
+}
+
+#timeline {
+    position: relative;
+    height: 100%;
+}
+
+.dot {
+    width: 30px;
+    height: 30px;
+    background-color: #3498db;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+}
+
+.dot:hover {
+    background-color: #e70b0b;
+}
+
+.label {
+    position: absolute;
+    top: -52px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    white-space: nowrap;
+    display: none;
+    text-align: center;
+}
+
+.dot:hover .label {
+    display: block;
+}
+
+
+#timeLabels {
+    width: 80%;
+    margin: 0 auto 0 auto; 
+    display: none;
+    justify-content: space-between;
+    font-weight: bold;
+}
+
+.error {
+    text-align: center;
+    color: red;
+}
