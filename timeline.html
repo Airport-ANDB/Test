@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Baggage Timeline Viewer</title>
+    <link rel="stylesheet" href="timeline.css">
+</head>
+<body>
+
+<div id="container">
+
+    <h1>Baggage Timeline Viewer</h1>
+
+    <div id="baggageForm">
+        <form id="baggageForm">
+            <label for="baggageId">Enter Baggage ID:</label>
+            <input type="number" id="baggageId" required>
+            <button type="submit">Show Timeline</button>
+        </form>
+    </div>
+    
+
+    <div id="timelineWrapper">
+        <div id="timelineLine"></div>
+        <div id="timeline"></div>
+    </div>
+
+    <div id="timeLabels">
+        <span>00:00</span>
+        <span>24:00</span>
+    </div>
+
+</div>
+
+<script>
+const form = document.getElementById('baggageForm');
+const timeline = document.getElementById('timeline');
+const timelineLine = document.getElementById('timelineLine');
+const timeLabels = document.getElementById('timeLabels');
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    timeline.innerHTML = "";    
+
+    const baggageId = document.getElementById('baggageId').value;
+
+    try {
+        const response = await fetch(`/baggage-timeline/${baggageId}`);
+        if (!response.ok) throw new Error("Baggage not found");
+
+        const data = await response.json();
+
+        const events = [
+            { label: "Check-in", time: data.Check_in_time },
+            { label: "Security", time: data.Security_time },
+            { label: "Loading Start", time: data.Loading_time_start },
+            { label: "Loading End", time: data.Loading_time_end },
+            { label: "Routing", time: data.Routing_time },
+            { label: "Unloading Start", time: data.Unloading_time_start },
+            { label: "Unloading End", time: data.Unloading_time_end }
+        ];
+
+        let hasEvents = false;
+
+        events.forEach(event => {
+            if (!event.time) return;
+
+            hasEvents = true;
+
+            const date = new Date(event.time);
+            date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+            const minutes = date.getHours() * 60 + date.getMinutes();
+            const percent = (minutes / 1440) * 100;
+
+            const dot = document.createElement('div');
+            dot.className = 'dot';
+            dot.style.left = percent + '%';
+
+            const label = document.createElement('div');
+            label.className = 'label';
+            label.innerText = `${event.label}\n${date.toTimeString().slice(0,8)}`;
+
+            dot.appendChild(label);
+            timeline.appendChild(dot);
+        });
+
+        if (hasEvents) {
+            timelineLine.style.display = "block";
+            timeLabels.style.display = "flex";
+        }
+
+    } catch (err) {
+        timeline.innerHTML = `<p class="error">${err.message}</p>`;
+    }
+});
+</script>
+
+</body>
+</html>
