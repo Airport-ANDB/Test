@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baggage Loading</title>
+    <link rel="stylesheet" href="loading-list.css">
+</head>
+<body>
+
+<div class="main-wrapper">
+    <div class="form-card input-card">
+        <div class="form-header">
+            <h1>Baggage Loading Manager</h1>
+            <p>Enter the flight number to assign bags to containers.</p>
+        </div>
+        <form id="flightForm">
+            <label for="flightNumber">Flight Number:</label>
+            <input type="text" id="flightNumber" placeholder="e.g. BA2490" required>
+            <button type="submit" class="submit-btn">Load Bags</button>
+        </form>
+    </div>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    const form = document.getElementById('flightForm');
+    const resultDiv = document.getElementById('result');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        resultDiv.innerHTML = '<p class="loading">Loading...</p>'; // Show loading state
+
+        const flightNumber = document.getElementById('flightNumber').value;
+
+        try {
+            // 1. Fetch Baggage
+            const baggageRes = await fetch(`/api/baggage/flight/${flightNumber}`);
+            if (!baggageRes.ok) throw new Error("Failed to fetch baggage");
+            const baggages = await baggageRes.json();
+            if (baggages.length === 0) throw new Error("No baggage in security for this flight");
+
+            // 2. Fetch Empty Containers
+            const containerRes = await fetch(`/api/containers/empty`);
+            if (!containerRes.ok) throw new Error("Failed to fetch containers");
+            let containers = await containerRes.json();
+            if (containers.length === 0) throw new Error("No empty containers available");
+
+            // 3. Find Optimal Containers (Original Logic Retained)
+            const selectedContainers = findOptimalContainers(containers, baggages.length);
+
+            // 4. Assign Bags to Containers and Update Backend
+            let bagIndex = 0;
+            for (const container of selectedContainers) {
+                while (container.bags.length < container.maxBags && bagIndex < baggages.length) {
+                    const bag = baggages[bagIndex];
+
+                    // Backend update call
+                    await fetch(`/api/baggage/${bag.Baggage_ID}/assign/${container.ID}`, { method: 'PUT' });
+
+                    container.bags.push(bag);
+                    bagIndex++;
+                }
+            }
+
+            // 5. Separate Assigned and Unassigned Bags
+            const assignedContainers = selectedContainers.filter(c => c.bags.length > 0);
+            const unassignedBags = baggages.slice(bagIndex);
+            
+            // 6. Render Results
+            resultDiv.innerHTML = ""; // Clear loading message
+            renderContainers(assignedContainers);
+            renderUnassignedBags(unassignedBags);
+
+        } catch (err) {
+            resultDiv.innerHTML = `<p class="error">${err.message}</p>`;
+        }
+    });
+
+    // --- Original Logic Functions Retained ---
+    function findOptimalContainers(containers, bagCount) {
+        const n = containers.length;
+        let bestCombination = null;
+        let minUnused = Infinity;
+
+        for (let mask = 1; mask < (1 << n); mask++) {
+            let combo = [];
+            let totalCapacity = 0;
+            for (let i = 0; i < n; i++) {
+                if (mask & (1 << i)) {
+                    combo.push({ ID: containers[i].ID, containerNumber: containers[i].Number, maxBags: containers[i].Max_load, bags: [] });
+                    totalCapacity += containers[i].Max_load;
+                }
+            }
+            if (totalCapacity >= bagCount) {
+                let unused = totalCapacity - bagCount;
+                if (unused < minUnused) { minUnused = unused; bestCombination = combo; if (unused === 0) break; }
+            }
+        }
+
+        if (!bestCombination) {
+            // If no single combination can fit all bags, use all containers fetched.
+            bestCombination = containers.map(c => ({ ID: c.ID, containerNumber: c.Number, maxBags: c.Max_load, bags: [] }));
+        }
+        return bestCombination;
+    }
+
+    function renderContainers(containers) {
+        let html = "";
+        containers.forEach(container => {
+            html += `<div class="container-section">
+                        <h2>Container: ${container.containerNumber} (${container.bags.length} / ${container.maxBags})</h2>
+                        <table class="baggage-table">
+                            <tr><th>Baggage ID</th><th>Passenger</th><th>Document ID</th><th>Status</th></tr>`;
+
+            container.bags.forEach(bag => {
+                html += `<tr id="bag-row-${bag.Baggage_ID}">
+                            <td>${bag.Baggage_ID}</td>
+                            <td>${bag.Passenger_Name} ${bag.Passenger_Surname}</td>
+                            <td>${bag.Passenger_Document_ID}</td>
+                            <td><button class="action-btn" onclick="markAsLoaded(${bag.Baggage_ID})">Mark as Loaded</button></td>
+                        </tr>`;
+            });
+            html += `</table></div>`;
+        });
+
+        resultDiv.innerHTML += html;
+    }
+
+    function renderUnassignedBags(bags) {
+        if (bags.length === 0) return;
+
+        let html = `<div class="container-section unassigned-section">
+                        <h2>Unassigned Bags (${bags.length} total)</h2>
+                        <table class="baggage-table unassigned-table">
+                            <tr><th>Baggage ID</th><th>Passenger</th><th>Document ID</th></tr>`;
+        bags.forEach(bag => {
+            html += `<tr id="bag-row-${bag.Baggage_ID}" class="unassigned-row">
+                        <td>${bag.Baggage_ID}</td>
+                        <td>${bag.Passenger_Name} ${bag.Passenger_Surname}</td>
+                        <td>${bag.Passenger_Document_ID}</td>
+                    </tr>`;
+        });
+        html += `</table></div>`;
+        resultDiv.innerHTML += html;
+    }
+
+    async function markAsLoaded(baggageId) {
+        try {
+            const res = await fetch(`/api/baggage/${baggageId}/loaded`, { method: 'PUT' });
+            if (!res.ok) throw new Error("Failed to update baggage status");
+
+            const row = document.getElementById(`bag-row-${baggageId}`);
+            if (row) {
+                row.cells[row.cells.length - 1].innerHTML = '<span class="status-loaded">LOADED</span>';
+                row.classList.add('bag-loaded');
+            }
+        } catch (err) {
+            alert("Error: " + err.message);
+        }
+    }
+</script>
+</body>
+</html>
