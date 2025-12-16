@@ -1,11 +1,11 @@
 USE AirportLuggageDB;
 
 INSERT INTO Airline (Name, Weight_limit, Fee, Description) VALUES
-('SkyHigh Airways',20000,10,'Commercial airline'),
-('BlueWing Airlines',15000,10,'Commercial airline'),
-('GlobalJet',22000,15,'Commercial airline'),
-('Starline Aviation',23000,12,'Commercial airline'),
-('SunFly Express',14000,8,'Commercial airline');
+('SkyHigh Airways',20,10,'Commercial airline'),
+('BlueWing Airlines',15,10,'Commercial airline'),
+('GlobalJet',22,15,'Commercial airline'),
+('Starline Aviation',23,12,'Commercial airline'),
+('SunFly Express',14,8,'Commercial airline');
 
 INSERT INTO Container (Number, Max_load, Status) VALUES
 ('C001',25,'Empty'),
