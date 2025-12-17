@@ -8,7 +8,6 @@ import os
 app = Flask(__name__)
 os.makedirs("receipts", exist_ok=True)
 
-# ---------- DB CONNECTION ----------
 conn = pyodbc.connect(
     "DRIVER={SQL Server};"
     "SERVER=LAPTOP-PF0MT41A;"
@@ -16,7 +15,6 @@ conn = pyodbc.connect(
     "Trusted_Connection=yes;"
 )
 
-# ---------- HTML (bez osobnych plików, prosto) ----------
 HTML = """
 <!doctype html>
 <html>
@@ -164,3 +162,4 @@ def receipt():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
