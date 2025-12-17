@@ -1,40 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Airport Luggage Form</title>
-
-<link rel="stylesheet" href="Baggage-check-in.css"> 
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Baggage Check-in</title>
+    <link rel="stylesheet" href="Baggage-check-in.css"> 
 </head>
 
-<body>
-<div class="container"> 
-<div class="title">
-<h1>Baggage Check-in</h1>
-</div>
+<body>    
+    <div class="main-container">
+        <div class="form-container">
+            <div class="form-header">
+                <h1>Baggage Check-in</h1>
+            </div>
 
-<div class="form-container">
-    
+            <form id="luggageForm" method="POST" action="/submit-luggage">
 
-    <form id="luggageForm" method="POST" action="/submit-luggage">
-        <label for="document_ID">Document ID:</label>
-        <input type="text" name="document_ID" id="document_ID" required>
+                <div class="input-group">
+                    <label for="document_ID">Document ID</label>
+                    <input type="text" name="document_ID" id="document_ID" placeholder="e.g. AB1234567" required>
+                </div>
 
-        <label for="flightNumber">Flight Number:</label>
-        <input type="text" name="flightNumber" id="flightNumber" required>
+                <div class="input-group">
+                    <label for="flightNumber">Flight Number</label>
+                    <input type="text" name="flightNumber" id="flightNumber" placeholder="e.g. AB123" required>
+                </div>
 
-        <label for="weight">Weight:</label>
-        <input type="number" step="1.0" name="weight" id="weight" required>
+                <div class="input-group">
+                    <label for="weight">Weight (kg)</label>
+                    
+                    <div class="weight-control-container">
+                        <input
+                            type="text"
+                            name="weight"
+                            id="weight"
+                            value="0.00"
+                            required
+                        >
 
-        <label for="airlineName">Airline:</label>
-        <input type="text" name="airlineName" id="airlineName" required>
+                        <div class="adjustment-buttons">
+                            <div class="button-column">
+                                <button type="button" class="adjustment-button" onclick="changeWeight(1)">+1</button>
+                                <button type="button" class="adjustment-button" onclick="changeWeight(-1)">−1</button>
+                            </div>
+                            <div class="button-column">
+                                <button type="button" class="adjustment-button" onclick="changeWeight(0.01)">+0.01</button>
+                                <button type="button" class="adjustment-button" onclick="changeWeight(-0.01)">−0.01</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <button type="submit">Submit</button>
-    </form>
-</div>    
-</div>
+                <div class="input-group">
+                    <label for="airlineName">Airline</label>
+                    <input type="text" name="airlineName" id="airlineName" placeholder="e.g. Global Jet" required>
+                </div>
 
+                <button type="submit" class="submit-button">Check In Luggage</button>
+            </form>
+        </div>    
+    </div>
+
+    <script>
+        function changeWeight(delta) {
+            const input = document.getElementById("weight");
+            let value = parseFloat(input.value) || 0;
+            value += delta;
+            if (value < 0) value = 0;
+            input.value = value.toFixed(2);
+        }
+    </script>
 
 </body>
 </html>
