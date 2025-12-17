@@ -10,87 +10,137 @@ os.makedirs("receipts", exist_ok=True)
 
 conn = pyodbc.connect(
     "DRIVER={SQL Server};"
-    "SERVER=LAPTOP-PF0MT41A;"
+    "SERVER=localhost;"
     "DATABASE=AirportLuggageDB;"
     "Trusted_Connection=yes;"
+    "UID=airportUser;"
+    "PWD=StrongPassword123!;"
 )
 
 HTML = """
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Baggage Receipt</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baggage Receipt Generator</title>
     <style>
-        body {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background-color: #f5f5f5;
-            height: 100vh;
+        * {
+            box-sizing: border-box;
             margin: 0;
+            padding: 0;
+        }
+
+        body {    
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #eef2f6;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .container {
-            background: white;
-            padding: 45px 55px;
-            border-radius: 12px;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
-            text-align: center;
-            width: 420px;
+        .main-container {
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
         }
 
-        h1 {
-            font-size: 30px;
-            margin-bottom: 35px;
-            font-weight: 600;
+        .form-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            text-align: center;
+        }
+
+        .form-header {
+            margin-bottom: 30px;
+        }
+
+        .form-header h1 {
+            font-size: 26px;
+            color: #1f2937;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
         }
 
         label {
-            font-size: 18px;
             display: block;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
         }
 
         input[type="number"] {
-            font-size: 20px;
-            padding: 12px;
             width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            background-color: #f9fafb;
             text-align: center;
-            margin-top: 10px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
         }
 
-        button {
-            font-size: 18px;
-            padding: 14px 20px;
+        input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+            background-color: #fff;
+        }
+
+        .submit-button {
             width: 100%;
-            background-color: #0078D4;
+            padding: 14px;
+            background-color: #2563eb;
             color: white;
             border: none;
+            font-size: 16px;
+            font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: 500;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
         }
 
-        button:hover {
-            background-color: #005ea6;
+        .submit-button:hover {
+            background-color: #1d4ed8;
+            box-shadow: 0 6px 10px rgba(37, 99, 235, 0.3);
+        }
+
+        .submit-button:active {
+            transform: translateY(1px);
         }
     </style>
 </head>
-
 <body>
-    <div class="container">
-        <h1>Baggage Receipt Generator</h1>
+    <div class="main-container">
+        <div class="form-container">
+            <div class="form-header">
+                <h1>Baggage Receipt</h1>
+            </div>
 
-        <form method="get" action="/receipt">
-            <label for="id">Baggage ID</label>
-            <input type="number" id="id" name="id" min="1" required>
+            <form method="get" action="/receipt">
+                <div class="input-group">
+                    <label for="id">Baggage ID</label>
+                    <input type="number" id="id" name="id" min="1" placeholder="e.g. 201" required>
+                </div>
 
-            <button type="submit">Download PDF</button>
-        </form>
+                <button type="submit" class="submit-button">Download PDF</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>
@@ -103,27 +153,21 @@ def index():
 @app.route("/receipt")
 def receipt():
     baggage_id = request.args.get("id")
-
     cursor = conn.cursor()
-    cursor.execute(
-        "SELECT * FROM ReceiptVW WHERE Baggage_ID = ?",
-        baggage_id
-    )
+    cursor.execute("SELECT * FROM ReceiptVW WHERE Baggage_ID = ?", baggage_id)
     row = cursor.fetchone()
 
     if not row:
-        return "Baggage not found", 404
+        return "<div style='text-align:center; padding:50px; font-family:sans-serif;'><h2>Baggage not found</h2><a href='/'>Go back</a></div>", 404
 
     filename = f"receipts/receipt_{baggage_id}.pdf"
     c = canvas.Canvas(filename, pagesize=A4)
 
     y = 800
     line = 22
-
     c.setFont("Helvetica-Bold", 20)
     c.drawCentredString(A4[0] / 2, y,"Baggage Receipt")
     y -= 40
-
     c.setFont("Helvetica", 13)
     c.drawString(50, y, f"Passenger: {row.Name} {row.Surname}")
     y -= line
@@ -133,11 +177,9 @@ def receipt():
     y -= line
     c.drawString(50, y, f"Fee: {row.Fee} EUR")
     y -= 30
-
     c.setFont("Helvetica-Bold", 16)
     c.drawCentredString(A4[0]/2,y,"Flight Information")
     y -= line
-
     c.setFont("Helvetica", 13)
     c.drawString(50, y, f"Flight: {row.Flight_number}")
     y -= line
@@ -150,12 +192,10 @@ def receipt():
     c.drawString(50, y, f"Departure: {row.Departure_time}")
     y -= line
     c.drawString(50, y, f"Arrival: {row.Arrival_time}")
-
     y -= 40
     c.setFont("Helvetica-Oblique", 10)
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     c.drawString(50, y, f"Generated: {timestamp}")
-
     c.save()
 
     return send_file(filename, as_attachment=True)
