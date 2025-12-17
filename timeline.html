@@ -2,34 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Baggage Timeline Viewer</title>
     <link rel="stylesheet" href="timeline.css">
 </head>
 <body>
 
-<div id="container">
+<div class="main-container">
 
-    <h1>Baggage Timeline Viewer</h1>
-
-    <div id="baggageForm">
-        <form id="baggageForm">
-            <label for="baggageId">Enter Baggage ID:</label>
-            <input type="number" id="baggageId" required>
-            <button type="submit">Show Timeline</button>
-        </form>
-    </div>
-    
-
-    <div id="timelineWrapper">
-        <div id="timelineLine"></div>
-        <div id="timeline"></div>
+    <div class="form-container">
+        <div class="form-header">
+            <h1>Baggage Timeline Viewer</h1>
+        </div>
+        
+        <div class="timeline-input-group">
+            <form id="baggageForm">
+                <label for="baggageId">Enter Baggage ID:</label>
+                <input type="number" id="baggageId" min="0" placeholder="e.g. 202" required>
+                <button type="submit" class="submit-button">Show Timeline</button>
+            </form>
+        </div>
     </div>
 
-    <div id="timeLabels">
-        <span>00:00</span>
-        <span>24:00</span>
-    </div>
+    <div id="timeline-container">
+        <div id="timeline-wrapper">
+            <div id="timelineLine"></div> 
+            <div id="timeline"></div> 
+        </div>
 
+        <div id="timeLabels">
+            <span>00:00</span>
+            <span>24:00</span>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -37,11 +42,14 @@ const form = document.getElementById('baggageForm');
 const timeline = document.getElementById('timeline');
 const timelineLine = document.getElementById('timelineLine');
 const timeLabels = document.getElementById('timeLabels');
+const timelineContainer = document.getElementById('timeline-container');
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    timeline.innerHTML = "";    
+    timeline.innerHTML = "";
+    timelineContainer.classList.remove('active');
+    document.querySelector('.error')?.remove(); 
 
     const baggageId = document.getElementById('baggageId').value;
 
@@ -64,12 +72,13 @@ form.addEventListener('submit', async (e) => {
         let hasEvents = false;
 
         events.forEach(event => {
-            if (!event.time) return;
+            if (!event.time) return; 
 
             hasEvents = true;
 
             const date = new Date(event.time);
-            date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+            
+            date.setMinutes(date.getMinutes() + date.getTimezoneOffset());            
             const minutes = date.getHours() * 60 + date.getMinutes();
             const percent = (minutes / 1440) * 100;
 
@@ -79,19 +88,28 @@ form.addEventListener('submit', async (e) => {
 
             const label = document.createElement('div');
             label.className = 'label';
-            label.innerText = `${event.label}\n${date.toTimeString().slice(0,8)}`;
+            
+            const timeString = date.toTimeString().slice(0, 8); 
+            label.innerHTML = `<span class="label-text">${event.label}</span><span class="label-time">${timeString}</span>`;
 
             dot.appendChild(label);
             timeline.appendChild(dot);
         });
 
         if (hasEvents) {
-            timelineLine.style.display = "block";
-            timeLabels.style.display = "flex";
+            timelineContainer.classList.add('active');
+        } else {
+            const errorElement = document.createElement('p');
+            errorElement.className = 'error';
+            errorElement.textContent = `No event data found for Baggage ID: ${baggageId}.`;
+            document.querySelector('.form-card').appendChild(errorElement);
         }
 
     } catch (err) {
-        timeline.innerHTML = `<p class="error">${err.message}</p>`;
+        const errorElement = document.createElement('p');
+        errorElement.className = 'error';
+        errorElement.textContent = `${err.message}. Please check the ID and try again.`;
+        document.querySelector('.form-card').appendChild(errorElement);
     }
 });
 </script>
