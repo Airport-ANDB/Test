@@ -8,16 +8,15 @@
 </head>
 <body>
 
-<div class="main-wrapper">
-    <div class="form-card input-card">
+<div class="main-container">
+    <div class="form-container input-card">
         <div class="form-header">
-            <h1>Baggage Loading Manager</h1>
-            <p>Enter the flight number to assign bags to containers.</p>
+            <h1>Baggage Loading List</h1>
         </div>
         <form id="flightForm">
             <label for="flightNumber">Flight Number:</label>
-            <input type="text" id="flightNumber" placeholder="e.g. BA2490" required>
-            <button type="submit" class="submit-btn">Load Bags</button>
+            <input type="text" id="flightNumber" placeholder="e.g. AB123" required>
+            <button type="submit" class="submit-button">Create Loading List</button>
         </form>
     </div>
 
@@ -30,46 +29,35 @@
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        resultDiv.innerHTML = '<p class="loading">Loading...</p>'; // Show loading state
 
         const flightNumber = document.getElementById('flightNumber').value;
 
         try {
-            // 1. Fetch Baggage
             const baggageRes = await fetch(`/api/baggage/flight/${flightNumber}`);
             if (!baggageRes.ok) throw new Error("Failed to fetch baggage");
             const baggages = await baggageRes.json();
-            if (baggages.length === 0) throw new Error("No baggage in security for this flight");
+            if (baggages.length === 0) throw new Error("No baggage to load for this flight");
 
-            // 2. Fetch Empty Containers
             const containerRes = await fetch(`/api/containers/empty`);
             if (!containerRes.ok) throw new Error("Failed to fetch containers");
             let containers = await containerRes.json();
             if (containers.length === 0) throw new Error("No empty containers available");
 
-            // 3. Find Optimal Containers (Original Logic Retained)
             const selectedContainers = findOptimalContainers(containers, baggages.length);
 
-            // 4. Assign Bags to Containers and Update Backend
             let bagIndex = 0;
             for (const container of selectedContainers) {
                 while (container.bags.length < container.maxBags && bagIndex < baggages.length) {
                     const bag = baggages[bagIndex];
-
-                    // Backend update call
                     await fetch(`/api/baggage/${bag.Baggage_ID}/assign/${container.ID}`, { method: 'PUT' });
-
                     container.bags.push(bag);
                     bagIndex++;
                 }
             }
 
-            // 5. Separate Assigned and Unassigned Bags
             const assignedContainers = selectedContainers.filter(c => c.bags.length > 0);
             const unassignedBags = baggages.slice(bagIndex);
             
-            // 6. Render Results
-            resultDiv.innerHTML = ""; // Clear loading message
             renderContainers(assignedContainers);
             renderUnassignedBags(unassignedBags);
 
@@ -78,7 +66,6 @@
         }
     });
 
-    // --- Original Logic Functions Retained ---
     function findOptimalContainers(containers, bagCount) {
         const n = containers.length;
         let bestCombination = null;
@@ -100,7 +87,6 @@
         }
 
         if (!bestCombination) {
-            // If no single combination can fit all bags, use all containers fetched.
             bestCombination = containers.map(c => ({ ID: c.ID, containerNumber: c.Number, maxBags: c.Max_load, bags: [] }));
         }
         return bestCombination;
@@ -119,7 +105,7 @@
                             <td>${bag.Baggage_ID}</td>
                             <td>${bag.Passenger_Name} ${bag.Passenger_Surname}</td>
                             <td>${bag.Passenger_Document_ID}</td>
-                            <td><button class="action-btn" onclick="markAsLoaded(${bag.Baggage_ID})">Mark as Loaded</button></td>
+                            <td><button class="action-button" onclick="markAsLoaded(${bag.Baggage_ID})">Mark as Loaded</button></td>
                         </tr>`;
             });
             html += `</table></div>`;
