@@ -1,0 +1,212 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {    
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #eef2f6;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; 
+    padding-top: 50px; 
+}
+
+.main-container {
+    width: 100%;
+    max-width: 800px; 
+    padding: 0 20px;
+}
+
+.form-container {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    margin-bottom: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.form-header h1 {
+    font-size: 28px;
+    color: #1f2937;
+    margin-bottom: 5px;
+}
+
+.timeline-input-group {
+    text-align: center;
+}
+
+#baggageForm {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+#baggageForm label {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+#baggageForm input {
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    width: 120px;
+    text-align: center;
+    background-color: #f9fafb;
+    transition: all 0.2s ease;
+}
+
+#baggageForm input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+    background-color: #fff;
+}
+
+.submit-button {
+    padding: 10px 20px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2);
+    min-width: 120px;
+}
+
+.submit-button:hover {
+    background-color: #1d4ed8;
+    box-shadow: 0 6px 10px rgba(37, 99, 235, 0.3);
+}
+
+.submit-button:active {
+    transform: translateY(1px);
+}
+
+#timeline-container {
+    display: none; 
+    padding: 0 10px; 
+}
+
+#timeline-container.active {
+    display: block;
+}
+
+#timeline-wrapper {
+    position: relative;
+    width: 100%;
+    height: 70px;
+    margin-top: 30px;
+}
+
+
+#timelineLine {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 8px; 
+    background-color: #9ca3af;
+    border-radius: 4px;
+    transform: translateY(-50%);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+
+#timeline {
+    position: relative;
+    height: 100%;
+}
+
+
+.dot {
+    width: 24px;
+    height: 24px;
+    background-color: #2563eb;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer; 
+    transition: all 0.2s ease;
+    border-radius: 50%;
+}
+
+.dot:hover {
+    width: 28px;
+    height: 28px;
+    background-color: red;
+}
+
+.label {
+    position: absolute;
+    bottom: calc(100% + 15px); 
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1f2937;
+    color: #fff;
+    padding: 8px 10px;
+    font-size: 13px;
+    line-height: 1.4;
+    border-radius: 6px;
+    white-space: nowrap;
+    display: none;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+.label::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    transform: translateX(-50%) rotate(45deg);
+    width: 10px;
+    height: 10px;
+    background-color: #1f2937;
+}
+
+.label-time {
+    display: block;
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+.dot:hover .label {
+    display: block;
+}
+
+
+#timeLabels {
+    width: 100%;
+    margin-top: 5px; 
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.error {
+    text-align: center;
+    color: #ef4444; 
+    font-weight: 500;
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #fee2e2; 
+}
