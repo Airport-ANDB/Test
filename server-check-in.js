@@ -63,7 +63,7 @@ app.post('/submit-luggage', async (req, res) => {
         await pool.request()
             .input("document_ID", sql.VarChar(50), document_ID)
             .input("flightNumber", sql.VarChar(20), flightNumber)
-            .input("weight", sql.Decimal(5, 2), baggageWeight)
+            .input("weight", sql.Decimal(10, 2), baggageWeight)
             .input("status", sql.VarChar(50), "Checked-in")
             .input("fee", sql.Decimal(10,2), fee) 
             .input("check_in_time", sql.DateTime2(0), checkInTime)
