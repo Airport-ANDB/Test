@@ -38,7 +38,7 @@ app.get('/api/baggage/flight/:flightNumber', async (req, res) => {
                 FROM Baggage b
                 JOIN Passenger p ON b.Passenger_Document_ID = p.Document_ID
                 WHERE b.Flight_Number = @flightNumber
-                  AND b.Status = 'In Security'
+                  AND b.Status = 'In Security' OR b.Status = 'Loading'
             `);
 
         res.json(result.recordset);
@@ -90,7 +90,6 @@ app.put('/api/baggage/:baggageId/assign/:containerId', async (req, res) => {
         res.status(500).send("Database error");
     }
 });
-
 
 app.put('/api/baggage/:baggageId/loaded', async (req, res) => {
     try {
